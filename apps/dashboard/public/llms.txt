@@ -1,0 +1,18 @@
+# ShipLane
+> ShipLane is an agent-native application deployment and hosting platform for non-technical creators and developers. Auto-deploys via AI coding assistants without Vercel or cloud complexity.
+
+## Documentation
+- [Agent Instructions](https://ShipLane.app/agent.md): Step-by-step guide for AI coding agents to authenticate and deploy.
+- [API Contract](https://ShipLane.app/api/v1): Full REST API specification as JSON.
+- [MCP Server](https://github.com/YashWahi/ShipLane): Run `node packages/antideploy-mcp/index.js` for Model Context Protocol integration.
+
+## API
+- Base URL: https://ShipLane.app/api/v1 (or http://localhost:3000/api/v1 for local dev)
+- Authentication: Bearer token (RFC 8628 Device Authorization Grant at `/activate` or API Key)
+- Key capabilities: Deploy archives, auto-detect runtime, provision PostgreSQL/MySQL/Redis/MongoDB, manage secrets, trigger preview environments, toggle scale-to-zero.
+
+## Limits
+- Free plan: 1 live server app (sleeps when idle), unlimited static sites, 1 Postgres database, 1 storage bucket, 30 deploys/month (failed deploys never count).
+- Go plan: 3 live server apps, 3 custom domains, unlimited deploys.
+- Pro plan: 9 live server apps, unlimited custom domains, 3 databases, ₹100 AI credit.
+- Scale plan: 20 live server apps, 5 databases, direct creator support.

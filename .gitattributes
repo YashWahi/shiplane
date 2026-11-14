@@ -1,0 +1,14 @@
+# Normalize line endings to LF on commit, convert to system line endings on checkout
+* text=auto eol=lf
+
+# Force binary treatment for binary file types
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.node binary
+*.dll binary
+*.exe binary
+*.zip binary
+*.gz binary

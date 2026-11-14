@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["ES2022"],
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@ShipLane/shared": ["packages/shared/types"],
+      "@/*": ["apps/dashboard/*"]
+    }
+  },
+  "include": ["scripts/**/*.ts", "packages/**/*.ts"]
+}
+

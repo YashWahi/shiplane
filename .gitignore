@@ -1,0 +1,51 @@
+# ─── Dependencies ───────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+
+# ─── Environment / Secrets ──────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ─── Build Outputs ──────────────────────────────────────────────
+.next/
+dist/
+out/
+build/
+
+# ─── Caches ─────────────────────────────────────────────────────
+.turbo/
+.cache/
+*.tsbuildinfo
+
+# ─── Logs ───────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ─── Local DB / Generated Artifacts ─────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+prisma/dev.db
+prisma/dev.db-journal
+
+# ─── OS / Editor ────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/settings.json
+
+# ─── Keys & Certificates ────────────────────────────────────────
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer

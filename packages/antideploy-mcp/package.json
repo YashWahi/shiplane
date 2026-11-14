@@ -1,0 +1,20 @@
+{
+  "name": "ShipLane-mcp",
+  "version": "1.0.0",
+  "description": "Model Context Protocol (MCP) server for ShipLane autonomous application cloud platform",
+  "main": "index.js",
+  "bin": {
+    "ShipLane-mcp": "./index.js",
+    "antideploy-mcp": "./index.js"
+  },
+  "keywords": [
+    "mcp",
+    "ShipLane",
+    "antideploy",
+    "ai-agent",
+    "deployment",
+    "cloud"
+  ],
+  "author": "ShipLane",
+  "license": "MIT"
+}

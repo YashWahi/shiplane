@@ -1,0 +1,306 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Plan {
+  FREE
+  STARTER
+  PRO
+  SCALE
+}
+
+enum DeployStatus {
+  QUEUED
+  ANALYZING
+  BUILDING
+  RELEASING
+  HEALTH_CHECK
+  LIVE
+  FAILED
+  CANCELLED
+}
+
+enum DatabaseEngine {
+  POSTGRES
+  MYSQL
+  REDIS
+  MONGODB
+}
+
+enum DatabaseStatus {
+  PROVISIONING
+  RUNNING
+  SLEEPING
+  STOPPED
+  DELETED
+}
+
+enum PreviewStatus {
+  CREATING
+  LIVE
+  EXPIRED
+  DESTROYED
+}
+
+enum SecretSource {
+  USER
+  AGENT
+  PLATFORM_MANAGED
+}
+
+model Account {
+  id            String            @id @default(cuid())
+  email         String            @unique
+  name          String?
+  plan          Plan              @default(FREE)
+  status        String            @default("active")
+  createdAt     DateTime          @default(now())
+  identities    AccountIdentity[]
+  applications  Application[]
+  apiKeys       ApiKey[]
+  usageEvents   UsageEvent[]
+  subscriptions Subscription[]
+}
+
+model AccountIdentity {
+  id              String   @id @default(cuid())
+  accountId       String
+  provider        String
+  providerSubject String
+  email           String?
+  account         Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerSubject])
+}
+
+model Application {
+  id               String                @id @default(cuid())
+  accountId        String
+  name             String
+  subdomain        String                @unique
+  sourceType       String
+  repository       String?
+  branch           String?
+  rootDirectory    String?
+  deployOnPush     Boolean               @default(false)
+  runtime          String?
+  framework        String?
+  buildCommand     String?
+  startCommand     String?
+  port             Int                   @default(3000)
+  scalingEnabled   Boolean               @default(false)
+  minInstances     Int                   @default(0)
+  maxInstances     Int                   @default(3)
+  currentInstances Int                   @default(0)
+  status           String                @default("sleeping")
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  account          Account               @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  deployments      Deployment[]
+  secrets          EnvironmentVariable[]
+  databases        DatabaseInstance[]
+  storageBuckets   StorageBucket[]
+  domains          Domain[]
+  cronJobs         CronJob[]
+  previews         PreviewEnvironment[]
+  securityScans    SecurityScan[]
+  healthChecks     HealthCheck[]
+}
+
+model Deployment {
+  id            String              @id @default(cuid())
+  applicationId String
+  sourceHash    String
+  commitSha     String?
+  commitMessage String?
+  status        DeployStatus        @default(QUEUED)
+  currentStep   String?
+  failedStep    String?
+  errorSummary  String?
+  url           String?
+  isPreview     Boolean             @default(false)
+  previewId     String?
+  startedAt     DateTime?
+  finishedAt    DateTime?
+  createdAt     DateTime            @default(now())
+  application   Application         @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  preview       PreviewEnvironment? @relation(fields: [previewId], references: [id], onDelete: SetNull)
+  logs          DeploymentLog[]
+  securityScan  SecurityScan?
+}
+
+model DeploymentLog {
+  id           String     @id @default(cuid())
+  deploymentId String
+  stream       String
+  line         String
+  timestamp    DateTime   @default(now())
+  deployment   Deployment @relation(fields: [deploymentId], references: [id], onDelete: Cascade)
+}
+
+model EnvironmentVariable {
+  id             String       @id @default(cuid())
+  applicationId  String
+  name           String
+  encryptedValue String
+  iv             String
+  authTag        String
+  source         SecretSource @default(USER)
+  isPreviewOnly  Boolean      @default(false)
+  updatedAt      DateTime     @updatedAt
+  application    Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@unique([applicationId, name])
+}
+
+model DatabaseInstance {
+  id                String         @id @default(cuid())
+  applicationId     String
+  engine            DatabaseEngine
+  status            DatabaseStatus @default(PROVISIONING)
+  containerId       String?
+  host              String?
+  port              Int?
+  databaseName      String?
+  username          String?
+  encryptedPassword String?
+  region            String         @default("local")
+  sleepingSince     DateTime?
+  createdAt         DateTime       @default(now())
+  application       Application    @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+}
+
+model StorageBucket {
+  id            String      @id @default(cuid())
+  applicationId String
+  name          String
+  providerRef   String
+  region        String      @default("local")
+  status        String      @default("active")
+  createdAt     DateTime    @default(now())
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+}
+
+model Domain {
+  id                String      @id @default(cuid())
+  applicationId     String
+  hostname          String      @unique
+  isCustom          Boolean     @default(false)
+  verificationState String      @default("pending")
+  certificateState  String      @default("pending")
+  createdAt         DateTime    @default(now())
+  application       Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+}
+
+model PreviewEnvironment {
+  id               String        @id @default(cuid())
+  applicationId    String
+  branch           String
+  previewSubdomain String        @unique
+  status           PreviewStatus @default(CREATING)
+  databaseCloneId  String?
+  sourceHash       String?
+  createdAt        DateTime      @default(now())
+  expiresAt        DateTime
+  destroyedAt      DateTime?
+  application      Application   @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  deployments      Deployment[]
+}
+
+model CronJob {
+  id            String      @id @default(cuid())
+  applicationId String
+  path          String
+  schedule      String
+  enabled       Boolean     @default(true)
+  lastRunAt     DateTime?
+  nextRunAt     DateTime?
+  createdAt     DateTime    @default(now())
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+}
+
+model SecurityScan {
+  id            String            @id @default(cuid())
+  applicationId String
+  deploymentId  String            @unique
+  status        String            @default("running")
+  startedAt     DateTime          @default(now())
+  completedAt   DateTime?
+  application   Application       @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  deployment    Deployment        @relation(fields: [deploymentId], references: [id], onDelete: Cascade)
+  findings      SecurityFinding[]
+}
+
+model SecurityFinding {
+  id             String       @id @default(cuid())
+  scanId         String
+  severity       String
+  code           String
+  message        String
+  recommendation String
+  filePath       String?
+  lineNumber     Int?
+  scan           SecurityScan @relation(fields: [scanId], references: [id], onDelete: Cascade)
+}
+
+model HealthCheck {
+  id             String      @id @default(cuid())
+  applicationId  String
+  status         String
+  responseTimeMs Int?
+  statusCode     Int?
+  checkedAt      DateTime    @default(now())
+  application    Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+}
+
+model DeviceCode {
+  id          String    @id @default(cuid())
+  deviceCode  String    @unique
+  userCode    String    @unique
+  scopes      String
+  status      String    @default("authorization_pending")
+  accountId   String?
+  clientId    String?
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime
+  approvedAt  DateTime?
+}
+
+model ApiKey {
+  id         String    @id @default(cuid())
+  accountId  String
+  name       String
+  hashedKey  String    @unique
+  prefix     String
+  scopes     String
+  lastUsedAt DateTime?
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  account    Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+}
+
+model UsageEvent {
+  id            String   @id @default(cuid())
+  accountId     String
+  applicationId String?
+  kind          String
+  units         Float
+  occurredAt    DateTime @default(now())
+  account       Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id               String   @id @default(cuid())
+  accountId        String
+  plan             Plan
+  period           String
+  status           String   @default("active")
+  currentPeriodEnd DateTime
+  createdAt        DateTime @default(now())
+  account          Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+}
