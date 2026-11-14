@@ -31,9 +31,5 @@
     "@prisma/engines@6.19.3": true,
     "esbuild@0.28.2": true,
     "msgpackr-extract@3.0.6": true
-  },
-  "dependencies": {
-    "@types/adm-zip": "^0.5.8",
-    "adm-zip": "^0.6.1"
   }
 }
