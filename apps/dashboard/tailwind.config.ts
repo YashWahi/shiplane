@@ -14,10 +14,14 @@ const config: Config = {
       center: true,
       padding: "2rem",
       screens: {
-        "2xl": "1400px",
+        "2xl": "1300px",
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["var(--font-sans)", "Manrope", "sans-serif"],
+        serif: ["var(--font-serif)", '"Playfair Display"', "Georgia", "serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -52,8 +56,18 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        taskible: {
+          navy: "#001A41",
+          blue: "#0066FF",
+          surface: "#F8FBFF",
+          muted: "#F2F8FF",
+          alt: "#E5EFFF",
+          slate: "#8093B1",
+        },
       },
       borderRadius: {
+        "24px": "24px",
+        "32px": "32px",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",

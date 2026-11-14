@@ -1,4 +1,10 @@
 import type { Metadata } from "next";
+import "@fontsource/manrope/400.css";
+import "@fontsource/manrope/500.css";
+import "@fontsource/manrope/600.css";
+import "@fontsource/manrope/700.css";
+import "@fontsource/playfair-display/600.css";
+import "@fontsource/playfair-display/600-italic.css";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -14,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-background text-foreground antialiased">
+      <body className="min-h-screen bg-background text-foreground antialiased font-sans">
         {children}
         <Toaster />
       </body>

@@ -6,7 +6,6 @@ import { useSearchParams } from "next/navigation";
 import { Rocket, ShieldCheck, CheckCircle2, XCircle, Loader2, ArrowRight, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { approveDeviceCode, denyDeviceCode } from "@/app/(console)/actions";
 
 function ActivateContent() {
@@ -50,32 +49,35 @@ function ActivateContent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12 relative">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center gap-2.5 font-bold text-2xl tracking-tight">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+          <Link href="/" className="inline-flex items-center gap-3 font-bold text-2xl tracking-tight group">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0066FF] text-white shadow-md shadow-blue-500/30 group-hover:scale-105 transition-transform">
               <Rocket className="h-5 w-5" />
             </div>
-            <span>Nebula</span>
+            <span className="font-bold tracking-tight text-foreground">ShipLane</span>
           </Link>
           <p className="text-sm text-muted-foreground">Device Authorization Grant (RFC 8628)</p>
         </div>
 
-        <Card className="border-border shadow-md">
-          <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-lg font-bold flex items-center gap-2">
-              <Terminal className="h-5 w-5 text-primary" />
+        <div className="taskible-card rounded-[24px] p-7 space-y-5 shadow-xl">
+          <div className="space-y-1">
+            <h2 className="text-lg font-bold flex items-center gap-2.5 text-foreground">
+              <div className="h-8 w-8 rounded-xl bg-[#0066FF]/10 flex items-center justify-center text-[#0066FF]">
+                <Terminal className="h-4 w-4" />
+              </div>
               <span>Connect AI Agent</span>
-            </CardTitle>
-            <CardDescription className="text-xs">
+            </h2>
+            <p className="text-xs text-muted-foreground leading-relaxed">
               Confirm the 8-character confirmation code shown in your terminal or AI coding assistant.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+            </p>
+          </div>
+
+          <div>
             {status === "approved" ? (
               <div className="space-y-4 py-4 text-center">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
                   <CheckCircle2 className="h-8 w-8" />
                 </div>
                 <div className="space-y-1">
@@ -85,14 +87,14 @@ function ActivateContent() {
                   </p>
                 </div>
                 <div className="pt-2">
-                  <Button asChild className="w-full">
+                  <Button asChild variant="taskible" className="w-full">
                     <Link href="/apps">Go to Console</Link>
                   </Button>
                 </div>
               </div>
             ) : status === "denied" ? (
               <div className="space-y-4 py-4 text-center">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-destructive/15 text-destructive border border-destructive/30">
                   <XCircle className="h-8 w-8" />
                 </div>
                 <div className="space-y-1">
@@ -118,17 +120,17 @@ function ActivateContent() {
                     value={code}
                     onChange={(e) => setCode(e.target.value.toUpperCase())}
                     placeholder="XXXX-XXXX"
-                    className="text-center font-mono text-xl tracking-widest uppercase font-bold h-12"
+                    className="text-center font-mono text-xl tracking-widest uppercase font-bold h-12 rounded-full border-border/80 bg-background/50 focus:border-[#0066FF]"
                     maxLength={9}
                     disabled={status === "loading"}
                   />
                 </div>
 
                 {errorMessage && (
-                  <div className="p-3 text-xs rounded-md bg-destructive/10 text-destructive border border-destructive/20 font-medium space-y-2">
+                  <div className="p-3 text-xs rounded-xl bg-destructive/10 text-destructive border border-destructive/20 font-medium space-y-2">
                     <p>{errorMessage}</p>
                     {errorMessage.toLowerCase().includes("sign in") && (
-                      <Button asChild size="sm" className="w-full">
+                      <Button asChild size="sm" variant="taskible" className="w-full">
                         <Link href={`/login?callbackUrl=/activate?code=${encodeURIComponent(code)}`}>
                           Sign In with Demo Account
                         </Link>
@@ -137,9 +139,9 @@ function ActivateContent() {
                   </div>
                 )}
 
-                <div className="rounded-lg bg-muted/50 p-3 text-xs text-muted-foreground space-y-1">
-                  <div className="font-semibold text-foreground">Permissions Requested:</div>
-                  <ul className="list-disc list-inside space-y-0.5">
+                <div className="rounded-2xl bg-muted/50 p-4 text-xs text-muted-foreground space-y-2">
+                  <div className="font-bold text-foreground">Permissions Requested:</div>
+                  <ul className="list-disc list-inside space-y-1 text-muted-foreground">
                     <li>Create and deploy container applications</li>
                     <li>Provision managed PostgreSQL databases</li>
                     <li>Inject environment variables and secrets</li>
@@ -150,6 +152,7 @@ function ActivateContent() {
                   <Button
                     onClick={handleApprove}
                     disabled={status === "loading" || !code.trim()}
+                    variant="taskible"
                     className="flex-1 font-semibold"
                   >
                     {status === "loading" ? (
@@ -165,7 +168,7 @@ function ActivateContent() {
                     )}
                   </Button>
                   <Button
-                    variant="outline"
+                    variant="taskibleSecondary"
                     onClick={handleDeny}
                     disabled={status === "loading" || !code.trim()}
                     className="font-semibold"
@@ -175,10 +178,10 @@ function ActivateContent() {
                 </div>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <div className="text-center text-xs text-muted-foreground flex items-center justify-center gap-1.5">
+        <div className="text-center text-xs text-muted-foreground flex items-center justify-center gap-1.5 font-medium">
           <ShieldCheck className="h-4 w-4 text-emerald-500" />
           <span>ShipLane Secure RFC 8628 Verification</span>
         </div>

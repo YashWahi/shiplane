@@ -7,7 +7,6 @@ import { signIn } from "next-auth/react";
 import { Rocket, ArrowRight, ShieldCheck, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -93,31 +92,34 @@ export default function LoginPage() {
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-background px-4 py-12">
       <ThemeToggle className="absolute right-4 top-4 sm:right-6 sm:top-6" />
+
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center gap-2.5 font-bold text-2xl tracking-tight">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm shadow-primary/20">
+          <Link href="/" className="inline-flex items-center gap-3 font-bold text-2xl tracking-tight group">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0066FF] text-white shadow-md shadow-blue-500/30 group-hover:scale-105 transition-transform">
               <Rocket className="h-5 w-5" />
             </div>
-            <span>Nebula</span>
+            <span className="font-bold tracking-tight text-foreground">ShipLane</span>
           </Link>
           <p className="text-sm text-muted-foreground">Sign in to your autonomous deployment console</p>
         </div>
 
-        <Card className="border-border shadow-sm">
-          <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-lg font-bold">Sign In</CardTitle>
-            <CardDescription className="text-xs">
+        <div className="taskible-card rounded-[24px] p-7 space-y-5 shadow-xl">
+          <div className="space-y-1">
+            <h2 className="text-lg font-bold text-foreground">Sign In</h2>
+            <p className="text-xs text-muted-foreground leading-relaxed">
               Access the developer console with 1-click demo access, Google OAuth, or custom credentials.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+            </p>
+          </div>
+
+          <div className="space-y-4">
             {/* 1-Click Demo Login */}
             <Button
               type="button"
               onClick={() => handleSignIn("demo@nebula.local", true)}
               disabled={isDemoLoading || isLoading || isGoogleLoading}
-              className="w-full gap-2 font-semibold shadow-sm"
+              variant="taskible"
+              className="w-full gap-2 font-semibold shadow-md"
               size="lg"
             >
               {isDemoLoading ? (
@@ -137,7 +139,7 @@ export default function LoginPage() {
             {/* Google OAuth Login */}
             <Button
               type="button"
-              variant="outline"
+              variant="taskibleSecondary"
               onClick={handleGoogleSignIn}
               disabled={isGoogleLoading || isLoading || isDemoLoading}
               className="w-full gap-2 font-semibold"
@@ -159,7 +161,7 @@ export default function LoginPage() {
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t border-border/80" />
               </div>
-              <span className="relative bg-card px-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+              <span className="relative bg-card px-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
                 Or custom email
               </span>
             </div>
@@ -176,20 +178,21 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="demo@nebula.local"
                   required
+                  className="rounded-full border-border/80 bg-background/50 focus:border-[#0066FF] h-11 px-4 text-sm"
                 />
               </div>
 
               {errorMessage ? (
-                <p role="alert" className="text-xs text-destructive">
+                <p role="alert" className="text-xs text-destructive font-medium">
                   {errorMessage}
                 </p>
               ) : null}
 
               <Button
                 type="submit"
-                variant="ghost"
+                variant="outline"
                 disabled={isLoading || isDemoLoading || isGoogleLoading}
-                className="w-full gap-2 font-semibold border border-input/60 hover:bg-accent"
+                className="w-full gap-2 font-semibold rounded-full h-11"
               >
                 {isLoading ? (
                   <>
@@ -204,10 +207,10 @@ export default function LoginPage() {
                 )}
               </Button>
             </form>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <div className="text-center text-xs text-muted-foreground flex items-center justify-center gap-1.5">
+        <div className="text-center text-xs text-muted-foreground flex items-center justify-center gap-1.5 font-medium">
           <ShieldCheck className="h-4 w-4 text-emerald-500" />
           <span>Demo account: demo@nebula.local</span>
         </div>
