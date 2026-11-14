@@ -188,9 +188,9 @@ export default function MarketingPage() {
               </div>
 
               {/* Showcase Grid */}
-              <div className="p-6 sm:p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Active Application Card */}
-                <div className="md:col-span-2 rounded-[20px] border border-border/80 bg-background/60 p-5 space-y-4">
+                <div className="lg:col-span-2 rounded-[20px] border border-border/80 bg-background/60 p-5 space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 rounded-xl bg-[#0066FF]/10 flex items-center justify-center text-[#0066FF]">
