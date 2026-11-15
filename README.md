@@ -4,6 +4,8 @@
 
 ---
 
+## Access the platform through: https://shiplane-sigma.vercel.app/
+
 ## 🎯 The ShipLane Premise (Zero Vercel/Cloud Overhead)
 
 If an AI coding assistant can write your application code, you shouldn't have to spend hours fighting cloud dashboards, creating GitHub Actions, configuring Vercel build presets, or stitching together external database providers:
